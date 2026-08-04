@@ -67,6 +67,11 @@
     <input type="text" id="bcEmail" value="ivanov@techdiagnostika.ru">
     <label>Telegram</label>
     <input type="text" id="bcTelegram" value="@ivanov_td">
+    <label>Формат</label>
+    <select id="bcFormat">
+      <option value="png">PNG</option>
+      <option value="pdf">PDF</option>
+    </select>
     <button onclick="generateBusinessCard()">Скачать визитку</button>
   </div>
 
@@ -96,6 +101,11 @@
 более 200 внедрений
 собственное производство
 поддержка 24/7</textarea>
+    <label>Формат</label>
+    <select id="presFormat">
+      <option value="pptx">PPTX</option>
+      <option value="pdf">PDF (требуется LibreOffice)</option>
+    </select>
     <button onclick="generatePresentation()">Скачать презентацию</button>
   </div>
 
@@ -111,6 +121,11 @@
     <input type="text" id="propTerms" value="30 рабочих дней">
     <label>Условия оплаты</label>
     <input type="text" id="propPayment" value="50/50">
+    <label>Формат</label>
+    <select id="propFormat">
+      <option value="docx">DOCX</option>
+      <option value="pdf">PDF (требуется LibreOffice)</option>
+    </select>
     <button onclick="generateProposal()">Скачать КП</button>
   </div>
 
@@ -147,11 +162,13 @@
         phone: document.getElementById('bcPhone').value,
         email: document.getElementById('bcEmail').value,
         telegram: document.getElementById('bcTelegram').value,
+        _format: document.getElementById('bcFormat').value,
       };
       const form = new FormData();
       form.append('payload', JSON.stringify(payload));
       const res = await fetch('/api/business-card', { method: 'POST', body: form });
-      downloadFromResponse(res, 'business_card.png');
+      const ext = payload._format;
+      downloadFromResponse(res, `business_card.${ext}`);
     }
 
     async function generateEmailSignature() {
@@ -173,11 +190,13 @@
         client_name: document.getElementById('presClient').value,
         project_goal: document.getElementById('presGoal').value,
         key_points: document.getElementById('presPoints').value.split('\n').filter(Boolean),
+        _format: document.getElementById('presFormat').value,
       };
       const form = new FormData();
       form.append('payload', JSON.stringify(payload));
       const res = await fetch('/api/presentation', { method: 'POST', body: form });
-      downloadFromResponse(res, 'presentation.pptx');
+      const ext = payload._format;
+      downloadFromResponse(res, `presentation.${ext}`);
     }
 
     async function generateProposal() {
@@ -193,11 +212,13 @@
         services,
         terms: document.getElementById('propTerms').value,
         payment: document.getElementById('propPayment').value,
+        _format: document.getElementById('propFormat').value,
       };
       const form = new FormData();
       form.append('payload', JSON.stringify(payload));
       const res = await fetch('/api/proposal', { method: 'POST', body: form });
-      downloadFromResponse(res, 'proposal.docx');
+      const ext = payload._format;
+      downloadFromResponse(res, `proposal.${ext}`);
     }
   </script>
 </body>

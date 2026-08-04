@@ -52,10 +52,11 @@ Brandmarka превращает бренд-бук компании в генер
 4. Генерация клиентских презентаций по шаблону.
 5. Генерация коммерческих предложений.
 6. Веб-интерфейс и REST API.
-7. Экспорт результатов в PNG, HTML, PPTX, DOCX.
+7. Экспорт результатов в PNG/HTML/PPTX/DOCX + PDF для визиток.
 
 **В планах:**
 
+- PDF-экспорт презентаций и КП без LibreOffice;
 - подключение Claude API для автоматической генерации текста;
 - личный кабинет с ролями;
 - интеграции с CRM;
@@ -67,9 +68,10 @@ Brandmarka превращает бренд-бук компании в генер
 - **Python 3.12+** — основной язык
 - **FastAPI** — backend и REST API
 - **HTML + JavaScript** — простой фронтенд без фреймворков
-- **Pillow** — генерация визиток
+- **Pillow** — генерация визиток и их PDF-экспорт
 - **python-pptx** — генерация презентаций
 - **python-docx** — генерация коммерческих предложений
+- **LibreOffice** — конвертация PPTX/DOCX в PDF (опционально)
 - **qrcode** — генерация QR-кодов vCard
 - **Anthropic Claude API** — генерация и доработка текста (подготовлено, но пока не используется в MVP)
 - **JSON-файлы на диске** — хранение данных в MVP
@@ -139,14 +141,23 @@ python run.py --help
 # Генерация визитки
 python run.py business-card --input demo/sample-inputs/employee.json
 
+# Визитка в PDF
+python run.py business-card --input demo/sample-inputs/employee.json --format pdf
+
 # Генерация email-подписи
 python run.py email-signature --input demo/sample-inputs/employee.json
 
 # Генерация презентации
 python run.py presentation --input demo/sample-inputs/client.json
 
+# Презентация в PDF (требуется LibreOffice)
+python run.py presentation --input demo/sample-inputs/client.json --format pdf
+
 # Генерация коммерческого предложения
 python run.py proposal --input demo/sample-inputs/proposal.json
+
+# КП в PDF (требуется LibreOffice)
+python run.py proposal --input demo/sample-inputs/proposal.json --format pdf
 
 # Загрузка своего бренд-бука
 python run.py upload-brandbook --file data/brandbook.json

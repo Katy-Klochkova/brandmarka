@@ -8,6 +8,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 from core.brand import load as load_brand
 from core.config import OUTPUT_DIR
+from core.exporter import office_to_pdf
 
 
 def _hex_to_rgb(hex_color: str) -> RGBColor:
@@ -16,8 +17,11 @@ def _hex_to_rgb(hex_color: str) -> RGBColor:
     return RGBColor(int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16))
 
 
-def generate(input_data: dict, output_dir: Path = OUTPUT_DIR) -> Path:
-    """Сгенерировать DOCX-КП и вернуть путь к файлу."""
+def generate(input_data: dict, output_dir: Path = OUTPUT_DIR, output_format: str = "docx") -> Path:
+    """Сгенерировать коммерческое предложение и вернуть путь к файлу.
+
+    output_format: "docx" или "pdf" (для PDF нужен LibreOffice)
+    """
     brand = load_brand()
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -116,9 +120,12 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR) -> Path:
     p.add_run("\n".join([l for l in contact_lines if l]))
 
     safe_name = client_name.replace(" ", "_").replace(".", "")
-    out_path = output_dir / f"proposal_{safe_name}.docx"
-    doc.save(out_path)
-    return out_path
+    docx_path = output_dir / f"proposal_{safe_name}.docx"
+    doc.save(docx_path)
+
+    if output_format.lower() == "pdf":
+        return office_to_pdf(docx_path, output_dir)
+    return docx_path
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ from pptx.util import Inches, Pt
 
 from core.brand import load as load_brand
 from core.config import OUTPUT_DIR
+from core.exporter import office_to_pdf
 
 
 def _hex_to_rgb(hex_color: str) -> RGBColor:
@@ -135,8 +136,11 @@ def _add_contacts_slide(prs: Presentation, brand: dict) -> None:
         p.space_after = Pt(12)
 
 
-def generate(input_data: dict, output_dir: Path = OUTPUT_DIR) -> Path:
-    """Сгенерировать PPTX-презентацию и вернуть путь к файлу."""
+def generate(input_data: dict, output_dir: Path = OUTPUT_DIR, output_format: str = "pptx") -> Path:
+    """Сгенерировать презентацию и вернуть путь к файлу.
+
+    output_format: "pptx" или "pdf" (для PDF нужен LibreOffice)
+    """
     brand = load_brand()
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -165,9 +169,12 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR) -> Path:
     _add_contacts_slide(prs, brand)
 
     safe_name = client_name.replace(" ", "_").replace(".", "")
-    out_path = output_dir / f"presentation_{safe_name}.pptx"
-    prs.save(out_path)
-    return out_path
+    pptx_path = output_dir / f"presentation_{safe_name}.pptx"
+    prs.save(pptx_path)
+
+    if output_format.lower() == "pdf":
+        return office_to_pdf(pptx_path, output_dir)
+    return pptx_path
 
 
 if __name__ == "__main__":

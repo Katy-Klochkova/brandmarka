@@ -45,7 +45,8 @@ def get_brandbook():
 def create_business_card(payload: str = Form(...)):
     """Сгенерировать визитку."""
     input_data = json.loads(payload)
-    path = business_card.generate(input_data)
+    fmt = input_data.pop("_format", "png")
+    path = business_card.generate(input_data, output_format=fmt)
     return FileResponse(path, filename=path.name)
 
 
@@ -61,7 +62,8 @@ def create_email_signature(payload: str = Form(...)):
 def create_presentation(payload: str = Form(...)):
     """Сгенерировать презентацию."""
     input_data = json.loads(payload)
-    path = presentation.generate(input_data)
+    fmt = input_data.pop("_format", "pptx")
+    path = presentation.generate(input_data, output_format=fmt)
     return FileResponse(path, filename=path.name)
 
 
@@ -69,5 +71,6 @@ def create_presentation(payload: str = Form(...)):
 def create_proposal(payload: str = Form(...)):
     """Сгенерировать коммерческое предложение."""
     input_data = json.loads(payload)
-    path = proposal.generate(input_data)
+    fmt = input_data.pop("_format", "docx")
+    path = proposal.generate(input_data, output_format=fmt)
     return FileResponse(path, filename=path.name)

@@ -8,6 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from core.brand import load as load_brand
 from core.config import OUTPUT_DIR
+from core.exporter import png_to_pdf
 
 # Размер визитки: 90×50 мм при 300 dpi = 1063×591 px
 WIDTH = 1063
@@ -79,8 +80,11 @@ def _make_qr_vcard(data: dict, brand: dict) -> Image.Image:
     return qr.convert("RGB")
 
 
-def generate(input_data: dict, output_dir: Path = OUTPUT_DIR) -> Path:
-    """Сгенерировать PNG-визитку и вернуть путь к файлу."""
+def generate(input_data: dict, output_dir: Path = OUTPUT_DIR, output_format: str = "png") -> Path:
+    """Сгенерировать визитку и вернуть путь к файлу.
+
+    output_format: "png" или "pdf"
+    """
     brand = load_brand()
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -173,9 +177,13 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR) -> Path:
 
     # Сохраняем
     safe_name = full_name.replace(" ", "_").replace(".", "")
-    out_path = output_dir / f"business_card_{safe_name}.png"
-    img.save(out_path, "PNG")
-    return out_path
+    png_path = output_dir / f"business_card_{safe_name}.png"
+    img.save(png_path, "PNG")
+
+    if output_format.lower() == "pdf":
+        pdf_path = png_path.with_suffix(".pdf")
+        return png_to_pdf(png_path, pdf_path)
+    return png_path
 
 
 if __name__ == "__main__":

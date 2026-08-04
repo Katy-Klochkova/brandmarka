@@ -17,15 +17,18 @@ def main():
 
     card = sub.add_parser("business-card", help="Сгенерировать визитку")
     card.add_argument("--input", required=True, help="Путь к JSON с данными сотрудника")
+    card.add_argument("--format", choices=["png", "pdf"], default="png", help="Формат выходного файла")
 
     sign = sub.add_parser("email-signature", help="Сгенерировать email-подпись")
     sign.add_argument("--input", required=True, help="Путь к JSON с данными сотрудника")
 
     pres = sub.add_parser("presentation", help="Сгенерировать презентацию")
     pres.add_argument("--input", required=True, help="Путь к JSON с данными клиента")
+    pres.add_argument("--format", choices=["pptx", "pdf"], default="pptx", help="Формат выходного файла")
 
     prop = sub.add_parser("proposal", help="Сгенерировать КП")
     prop.add_argument("--input", required=True, help="Путь к JSON с данными клиента")
+    prop.add_argument("--format", choices=["docx", "pdf"], default="docx", help="Формат выходного файла")
 
     args = parser.parse_args()
 
@@ -35,7 +38,7 @@ def main():
         print("Бренд-бук загружен.")
     elif args.command == "business-card":
         inp = json.loads(Path(args.input).read_text(encoding="utf-8"))
-        path = business_card.generate(inp)
+        path = business_card.generate(inp, output_format=args.format)
         print(f"Визитка сохранена: {path}")
     elif args.command == "email-signature":
         inp = json.loads(Path(args.input).read_text(encoding="utf-8"))
@@ -43,11 +46,11 @@ def main():
         print(f"Email-подпись сохранена: {path}")
     elif args.command == "presentation":
         inp = json.loads(Path(args.input).read_text(encoding="utf-8"))
-        path = presentation.generate(inp)
+        path = presentation.generate(inp, output_format=args.format)
         print(f"Презентация сохранена: {path}")
     elif args.command == "proposal":
         inp = json.loads(Path(args.input).read_text(encoding="utf-8"))
-        path = proposal.generate(inp)
+        path = proposal.generate(inp, output_format=args.format)
         print(f"КП сохранено: {path}")
     else:
         parser.print_help()
