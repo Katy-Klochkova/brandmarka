@@ -1,9 +1,10 @@
 """Генерация HTML email-подписи в стиле Anthropic."""
 
+import base64
 from pathlib import Path
 
 from core.brand import load as load_brand
-from core.config import OUTPUT_DIR
+from core.config import BASE_DIR, OUTPUT_DIR
 
 
 def generate(input_data: dict, output_dir: Path = OUTPUT_DIR) -> Path:
@@ -28,6 +29,29 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR) -> Path:
     text_color = brand.get("colors", {}).get("text", "#1F1F1E")
 
     site = contacts.get("site", "")
+
+    logo_url = brand.get("logo_url", "")
+    logo_html = ""
+    if logo_url:
+        try:
+            logo_path = BASE_DIR / logo_url.lstrip("/")
+            if logo_path.exists():
+                ext = logo_path.suffix.lower()
+                mime = {
+                    ".png": "image/png",
+                    ".jpg": "image/jpeg",
+                    ".jpeg": "image/jpeg",
+                    ".svg": "image/svg+xml",
+                }.get(ext, "image/png")
+                b64 = base64.b64encode(logo_path.read_bytes()).decode("ascii")
+                logo_html = (
+                    f'<td valign="top" style="padding-left:16px;">'
+                    f'<img src="data:{mime};base64,{b64}" alt="{company}" '
+                    f'style="max-height:54px; width:auto; display:block;">'
+                    f'</td>'
+                )
+        except Exception:
+            logo_html = ""
 
     telegram_html = (
         f'<span style="margin-left:8px;">'
@@ -61,6 +85,7 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR) -> Path:
       </div>
       {f'<div style="margin-top:10px; font-size:12px; color:#6B6B6A; font-style:italic;">{slogan}</div>' if slogan else ""}
     </td>
+    {logo_html}
   </tr>
 </table>
 """

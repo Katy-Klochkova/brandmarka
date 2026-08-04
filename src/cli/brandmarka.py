@@ -14,6 +14,7 @@ def main():
 
     upload = sub.add_parser("upload-brandbook", help="Загрузить бренд-бук")
     upload.add_argument("--file", required=True, help="Путь к brandbook.json")
+    upload.add_argument("--logo", help="Путь к файлу логотипа (PNG, JPG, SVG)")
 
     card = sub.add_parser("business-card", help="Сгенерировать визитку")
     card.add_argument("--input", required=True, help="Путь к JSON с данными сотрудника")
@@ -34,6 +35,21 @@ def main():
 
     if args.command == "upload-brandbook":
         data = json.loads(Path(args.file).read_text(encoding="utf-8"))
+        if args.logo:
+            from core.config import UPLOADS_DIR
+            logo_path = Path(args.logo)
+            if not logo_path.exists():
+                print(f"Логотип не найден: {logo_path}")
+                return
+            ext = logo_path.suffix.lower()
+            if ext not in {".png", ".jpg", ".jpeg", ".svg"}:
+                print("Логотип должен быть PNG, JPG или SVG")
+                return
+            UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+            target = UPLOADS_DIR / f"logo{ext}"
+            target.write_bytes(logo_path.read_bytes())
+            data["logo_url"] = f"/uploads/logo{ext}"
+            print(f"Логотип загружен: {target}")
         save_brand(data)
         print("Бренд-бук загружен.")
     elif args.command == "business-card":

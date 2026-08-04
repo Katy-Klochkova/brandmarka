@@ -224,7 +224,11 @@
       <div class="file-input-wrapper">
         <input type="file" id="brandbookFile" accept=".json">
       </div>
-      <p class="hint">Файл с цветами, шрифтами, контактами и тоном компании.</p>
+      <label for="logoFile">Логотип (опционально)</label>
+      <div class="file-input-wrapper">
+        <input type="file" id="logoFile" accept=".png,.jpg,.jpeg,.svg">
+      </div>
+      <p class="hint">JSON с цветами, шрифтами, контактами. Логотип — PNG, JPG или SVG.</p>
       <button class="secondary" onclick="uploadBrandbook()">Загрузить</button>
       <div class="status" id="brandbookStatus"></div>
     </div>
@@ -366,12 +370,14 @@
     async function uploadBrandbook() {
       const file = document.getElementById('brandbookFile').files[0];
       if (!file) return alert('Выберите файл brandbook.json');
+      const logo = document.getElementById('logoFile').files[0];
       const form = new FormData();
       form.append('brandbook', file);
+      if (logo) form.append('logo', logo);
       const res = await fetch('/api/brandbook', { method: 'POST', body: form });
       const data = await res.json();
       document.getElementById('brandbookStatus').textContent =
-        data.status === 'ok' ? `Бренд-бук ${data.company} загружен` : 'Ошибка загрузки';
+        data.status === 'ok' ? `Бренд-бук ${data.company} загружен${data.logo_url ? ' с логотипом' : ''}` : (data.message || 'Ошибка загрузки');
     }
 
     function downloadFromResponse(res, filename) {

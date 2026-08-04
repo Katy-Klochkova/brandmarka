@@ -7,8 +7,9 @@ import qrcode
 from PIL import Image, ImageColor, ImageDraw, ImageFont
 
 from core.brand import load as load_brand
-from core.config import OUTPUT_DIR
+from core.config import BASE_DIR, OUTPUT_DIR
 from core.exporter import png_to_pdf
+from core.images import open_logo
 
 # Размер визитки: 90×50 мм при 300 dpi = 1063×591 px
 WIDTH = 1063
@@ -173,9 +174,23 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR, output_format: str
         draw.text((content_x, y), line, fill=text_rgb, font=font_contact)
         y += 44
 
+    # Логотип компании в правом верхнем углу
+    logo_url = brand.get("logo_url", "")
+    logo_img = open_logo(logo_url, BASE_DIR, width=300)
+    if logo_img:
+        # Макс. высота 70 px, сохраняем пропорции
+        max_logo_height = 70
+        ratio = logo_img.width / logo_img.height
+        logo_h = max_logo_height
+        logo_w = int(logo_h * ratio)
+        logo_img = logo_img.resize((logo_w, logo_h), Image.Resampling.LANCZOS)
+        logo_x = WIDTH - MARGIN - logo_w
+        logo_y = 55
+        img.paste(logo_img, (logo_x, logo_y), logo_img)
+
     # Правая колонка: компания, слоган, QR
     company_lines = _wrap_text(draw, company, font_company, right_w)
-    cy = 70
+    cy = 140
     for line in company_lines:
         draw.text((right_x, cy), line, fill=primary_rgb, font=font_company)
         _, h = _text_size(draw, line, font_company)

@@ -10,8 +10,9 @@ from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
 from core.brand import load as load_brand
-from core.config import OUTPUT_DIR
+from core.config import BASE_DIR, OUTPUT_DIR
 from core.exporter import office_to_pdf
+from core.images import prepare_logo
 
 
 _DEFAULT_PRIMARY = "#1F1F1E"
@@ -103,6 +104,18 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR, output_format: str
         run.font.size = Pt(11)
         run.font.italic = True
         run.font.color.rgb = colors["secondary"]
+
+    # Логотип
+    logo_url = brand.get("logo_url", "")
+    logo_path = prepare_logo(logo_url, BASE_DIR, width=300)
+    if logo_path:
+        try:
+            logo_para = doc.add_paragraph()
+            logo_para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            logo_run = logo_para.add_run()
+            logo_run.add_picture(str(logo_path), width=Inches(1.2))
+        except Exception:
+            pass
 
     # Кому
     p = doc.add_paragraph()
