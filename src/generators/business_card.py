@@ -4,7 +4,7 @@ import io
 from pathlib import Path
 
 import qrcode
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageColor, ImageDraw, ImageFont
 
 from core.brand import load as load_brand
 from core.config import OUTPUT_DIR
@@ -88,18 +88,37 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR, output_format: str
     brand = load_brand()
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Цвета из бренд-бука
-    primary = brand.get("colors", {}).get("primary", "#003366")
-    background = brand.get("colors", {}).get("background", "#FFFFFF")
-    text_color = brand.get("colors", {}).get("text", "#1A1A1A")
-    secondary = brand.get("colors", {}).get("secondary", "#00A3E0")
+    def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
+        hex_color = hex_color.lstrip("#")
+        return int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+
+    # Цвета из бренд-бука с фолбэком в антропик-стиле
+    primary = brand.get("colors", {}).get("primary", "#1F1F1E")
+    secondary = brand.get("colors", {}).get("secondary", "#5A4BFF")
+    background = brand.get("colors", {}).get("background", "#FAFAF8")
+    text_color = brand.get("colors", {}).get("text", "#1F1F1E")
+
+    primary_rgb = _hex_to_rgb(primary)
+    secondary_rgb = _hex_to_rgb(secondary)
+    bg_rgb = _hex_to_rgb(background)
+    text_rgb = _hex_to_rgb(text_color)
 
     # Создаём холст
-    img = Image.new("RGB", (WIDTH, HEIGHT), background)
+    img = Image.new("RGB", (WIDTH, HEIGHT), bg_rgb)
     draw = ImageDraw.Draw(img)
 
-    # Рамка сверху в цвет бренда
-    draw.rectangle([(0, 0), (WIDTH, 12)], fill=primary)
+    # Мягкий фирменный градиент сверху вниз
+    for row in range(0, HEIGHT, 2):
+        alpha = int(5 + (row / HEIGHT) * 12)
+        draw.line([(0, row), (WIDTH, row)], fill=(
+            min(255, bg_rgb[0] + (secondary_rgb[0] - bg_rgb[0]) * alpha // 255),
+            min(255, bg_rgb[1] + (secondary_rgb[1] - bg_rgb[1]) * alpha // 255),
+            min(255, bg_rgb[2] + (secondary_rgb[2] - bg_rgb[2]) * alpha // 255),
+        ))
+
+    # Цветная полоса слева в стиле Anthropic
+    draw.rectangle([(0, 0), (16, HEIGHT)], fill=secondary_rgb)
+    draw.rectangle([(16, 0), (22, HEIGHT)], fill=(255, 91, 36))
 
     # Шрифты
     font_name = _get_font(54, bold=True)
@@ -123,17 +142,20 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR, output_format: str
     right_x = int(WIDTH * 0.56)
     right_w = WIDTH - right_x - MARGIN
 
+    # Сдвигаем контент, чтобы не перекрывать левую полосу
+    content_x = 50
+
     # Левая колонка: ФИО и должность с переносом
     y = 70
     name_lines = _wrap_text(draw, full_name, font_name, left_w)
     for line in name_lines:
-        draw.text((left_x, y), line, fill=text_color, font=font_name)
+        draw.text((content_x, y), line, fill=text_rgb, font=font_name)
         _, h = _text_size(draw, line, font_name)
         y += h + 10
 
     position_lines = _wrap_text(draw, position, font_position, left_w)
     for line in position_lines:
-        draw.text((left_x, y), line, fill=secondary, font=font_position)
+        draw.text((content_x, y), line, fill=secondary_rgb, font=font_position)
         _, h = _text_size(draw, line, font_position)
         y += h + 8
     y += 30
@@ -148,14 +170,14 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR, output_format: str
         contacts.append(f"Telegram: {telegram}")
 
     for line in contacts:
-        draw.text((left_x, y), line, fill=text_color, font=font_contact)
+        draw.text((content_x, y), line, fill=text_rgb, font=font_contact)
         y += 44
 
     # Правая колонка: компания, слоган, QR
     company_lines = _wrap_text(draw, company, font_company, right_w)
     cy = 70
     for line in company_lines:
-        draw.text((right_x, cy), line, fill=primary, font=font_company)
+        draw.text((right_x, cy), line, fill=primary_rgb, font=font_company)
         _, h = _text_size(draw, line, font_company)
         cy += h + 6
 
@@ -163,7 +185,7 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR, output_format: str
         cy += 10
         slogan_lines = _wrap_text(draw, slogan, font_slogan, right_w)
         for line in slogan_lines:
-            draw.text((right_x, cy), line, fill=text_color, font=font_slogan)
+            draw.text((right_x, cy), line, fill=text_rgb, font=font_slogan)
             _, h = _text_size(draw, line, font_slogan)
             cy += h + 4
 

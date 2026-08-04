@@ -4,129 +4,362 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brandmarka</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: Inter, Arial, sans-serif;
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
-      color: #1A1A1A;
+    :root {
+      --bg: #FAFAF8;
+      --surface: #FFFFFF;
+      --text: #1F1F1E;
+      --text-muted: #6B6B6A;
+      --border: #E8E8E6;
+      --border-hover: #D4D4D1;
+      --accent: #5A4BFF;
+      --accent-light: #EDE9FF;
+      --accent-2: #FF5B24;
+      --accent-2-light: #FFF0EB;
+      --success: #1A7F5B;
+      --shadow: 0 1px 2px rgba(31, 31, 30, 0.04), 0 6px 24px rgba(31, 31, 30, 0.06);
+      --radius: 16px;
+      --radius-sm: 10px;
     }
-    h1 { color: #003366; }
-    h2 { margin-top: 32px; color: #003366; }
-    label { display: block; margin: 12px 0 4px; font-weight: 600; }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      margin: 0;
+      padding: 0;
+    }
+
+    .hero {
+      padding: 72px 24px 56px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--surface) 0%, #F5F3FF 50%, #FFF8F5 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero h1 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 56px;
+      font-weight: 600;
+      margin: 0 0 16px;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .section-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .section:nth-child(odd) .section-number {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .section:nth-child(even) .section-number {
+      background: var(--accent-2-light);
+      color: var(--accent-2);
+    }
+
+    .section h2 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 26px;
+      font-weight: 600;
+      margin: 0;
+      color: var(--text);
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 8px;
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text);
+    }
+
     input, textarea, select {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
+      padding: 13px 15px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--bg);
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .row { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 38px; }
+    }
+
     button {
-      margin-top: 16px;
-      padding: 12px 24px;
-      background: #003366;
-      color: white;
+      margin-top: 22px;
+      padding: 14px 28px;
+      background: var(--text);
+      color: #fff;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      font-size: 16px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: transform 0.1s, background 0.15s;
     }
-    button:hover { background: #004080; }
-    .section {
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 16px;
+
+    button:hover {
+      background: #000;
+      transform: translateY(-1px);
     }
-    .status { margin-top: 12px; color: #059669; }
+
+    button.secondary {
+      background: var(--accent);
+    }
+
+    button.secondary:hover {
+      background: #4739E6;
+    }
+
+    .status {
+      margin-top: 14px;
+      font-size: 14px;
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+    }
+
+    .file-input-wrapper input[type="file"] {
+      padding: 10px 12px;
+    }
   </style>
 </head>
 <body>
-  <h1>Brandmarka</h1>
-  <p>Генератор фирменных материалов: визитки, презентации, коммерческие предложения.</p>
-
-  <div class="section">
-    <h2>1. Загрузить бренд-бук</h2>
-    <label for="brandbookFile">Файл brandbook.json</label>
-    <input type="file" id="brandbookFile" accept=".json">
-    <button onclick="uploadBrandbook()">Загрузить</button>
-    <div class="status" id="brandbookStatus"></div>
+  <div class="hero">
+    <h1>Brand<span>marka</span></h1>
+    <p>Генератор фирменных материалов для маркетологов: визитки, email-подписи, презентации и коммерческие предложения в едином стиле.</p>
   </div>
 
-  <div class="section">
-    <h2>2. Визитка сотрудника</h2>
-    <label>ФИО</label>
-    <input type="text" id="bcName" value="Иванов Иван Иванович">
-    <label>Должность</label>
-    <input type="text" id="bcPosition" value="Руководитель отдела продаж">
-    <label>Телефон</label>
-    <input type="text" id="bcPhone" value="+7 900 123-45-67">
-    <label>Email</label>
-    <input type="text" id="bcEmail" value="ivanov@techdiagnostika.ru">
-    <label>Telegram</label>
-    <input type="text" id="bcTelegram" value="@ivanov_td">
-    <label>Формат</label>
-    <select id="bcFormat">
-      <option value="png">PNG</option>
-      <option value="pdf">PDF</option>
-    </select>
-    <button onclick="generateBusinessCard()">Скачать визитку</button>
-  </div>
+  <div class="container">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <h2>Бренд-бук</h2>
+      </div>
+      <label for="brandbookFile">Загрузите brandbook.json</label>
+      <div class="file-input-wrapper">
+        <input type="file" id="brandbookFile" accept=".json">
+      </div>
+      <p class="hint">Файл с цветами, шрифтами, контактами и тоном компании.</p>
+      <button class="secondary" onclick="uploadBrandbook()">Загрузить</button>
+      <div class="status" id="brandbookStatus"></div>
+    </div>
 
-  <div class="section">
-    <h2>3. Email-подпись</h2>
-    <label>ФИО</label>
-    <input type="text" id="signName" value="Иванов Иван Иванович">
-    <label>Должность</label>
-    <input type="text" id="signPosition" value="Руководитель отдела продаж">
-    <label>Телефон</label>
-    <input type="text" id="signPhone" value="+7 900 123-45-67">
-    <label>Email</label>
-    <input type="text" id="signEmail" value="ivanov@techdiagnostika.ru">
-    <label>Telegram</label>
-    <input type="text" id="signTelegram" value="@ivanov_td">
-    <button onclick="generateEmailSignature()">Скачать подпись</button>
-  </div>
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <h2>Визитка сотрудника</h2>
+      </div>
+      <div class="row">
+        <div>
+          <label>ФИО</label>
+          <input type="text" id="bcName" value="Иванов Иван Иванович">
+        </div>
+        <div>
+          <label>Должность</label>
+          <input type="text" id="bcPosition" value="Руководитель отдела продаж">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Телефон</label>
+          <input type="text" id="bcPhone" value="+7 900 123-45-67">
+        </div>
+        <div>
+          <label>Email</label>
+          <input type="text" id="bcEmail" value="ivanov@techdiagnostika.ru">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Telegram</label>
+          <input type="text" id="bcTelegram" value="@ivanov_td">
+        </div>
+        <div>
+          <label>Формат</label>
+          <select id="bcFormat">
+            <option value="png">PNG</option>
+            <option value="pdf">PDF</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="generateBusinessCard()">Скачать визитку</button>
+    </div>
 
-  <div class="section">
-    <h2>4. Клиентская презентация</h2>
-    <label>Клиент</label>
-    <input type="text" id="presClient" value="ООО РоторПром">
-    <label>Цель проекта</label>
-    <input type="text" id="presGoal" value="внедрение системы онлайн-вибродиагностики">
-    <label>Ключевые тезисы (через Enter)</label>
-    <textarea id="presPoints" rows="4">15 лет опыта
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <h2>Email-подпись</h2>
+      </div>
+      <div class="row">
+        <div>
+          <label>ФИО</label>
+          <input type="text" id="signName" value="Иванов Иван Иванович">
+        </div>
+        <div>
+          <label>Должность</label>
+          <input type="text" id="signPosition" value="Руководитель отдела продаж">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Телефон</label>
+          <input type="text" id="signPhone" value="+7 900 123-45-67">
+        </div>
+        <div>
+          <label>Email</label>
+          <input type="text" id="signEmail" value="ivanov@techdiagnostika.ru">
+        </div>
+      </div>
+      <label>Telegram</label>
+      <input type="text" id="signTelegram" value="@ivanov_td">
+      <button onclick="generateEmailSignature()">Скачать подпись</button>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <h2>Клиентская презентация</h2>
+      </div>
+      <label>Клиент</label>
+      <input type="text" id="presClient" value="ООО РоторПром">
+      <label>Цель проекта</label>
+      <input type="text" id="presGoal" value="внедрение системы онлайн-вибродиагностики">
+      <label>Ключевые тезисы</label>
+      <textarea id="presPoints">15 лет опыта
 более 200 внедрений
 собственное производство
 поддержка 24/7</textarea>
-    <label>Формат</label>
-    <select id="presFormat">
-      <option value="pptx">PPTX</option>
-      <option value="pdf">PDF (требуется LibreOffice)</option>
-    </select>
-    <button onclick="generatePresentation()">Скачать презентацию</button>
-  </div>
+      <p class="hint">Каждый тезис с новой строки.</p>
+      <div class="row">
+        <div>
+          <label>Формат</label>
+          <select id="presFormat">
+            <option value="pptx">PPTX</option>
+            <option value="pdf">PDF (требуется LibreOffice)</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="generatePresentation()">Скачать презентацию</button>
+    </div>
 
-  <div class="section">
-    <h2>4. Коммерческое предложение</h2>
-    <label>Клиент</label>
-    <input type="text" id="propClient" value="ООО РоторПром">
-    <label>Услуги (название — цена, каждая с новой строки)</label>
-    <textarea id="propServices" rows="4">Поставка системы — 1250000
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <h2>Коммерческое предложение</h2>
+      </div>
+      <label>Клиент</label>
+      <input type="text" id="propClient" value="ООО РоторПром">
+      <label>Услуги</label>
+      <textarea id="propServices">Поставка системы — 1250000
 Монтаж и пусконаладка — 280000
 Обучение персонала — 120000</textarea>
-    <label>Сроки</label>
-    <input type="text" id="propTerms" value="30 рабочих дней">
-    <label>Условия оплаты</label>
-    <input type="text" id="propPayment" value="50/50">
-    <label>Формат</label>
-    <select id="propFormat">
-      <option value="docx">DOCX</option>
-      <option value="pdf">PDF (требуется LibreOffice)</option>
-    </select>
-    <button onclick="generateProposal()">Скачать КП</button>
+      <p class="hint">Формат: название — цена, каждая услуга с новой строки.</p>
+      <div class="row">
+        <div>
+          <label>Сроки</label>
+          <input type="text" id="propTerms" value="30 рабочих дней">
+        </div>
+        <div>
+          <label>Условия оплаты</label>
+          <input type="text" id="propPayment" value="50/50">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Формат</label>
+          <select id="propFormat">
+            <option value="docx">DOCX</option>
+            <option value="pdf">PDF (требуется LibreOffice)</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="generateProposal()">Скачать КП</button>
+    </div>
   </div>
 
   <script>

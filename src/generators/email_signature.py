@@ -1,4 +1,4 @@
-"""Генерация HTML email-подписи."""
+"""Генерация HTML email-подписи в стиле Anthropic."""
 
 from pathlib import Path
 
@@ -21,29 +21,45 @@ def generate(input_data: dict, output_dir: Path = OUTPUT_DIR) -> Path:
     slogan = brand.get("slogan", "")
     contacts = brand.get("contacts", {})
 
-    primary = brand.get("colors", {}).get("primary", "#003366")
-    secondary = brand.get("colors", {}).get("secondary", "#00A3E0")
-    text_color = brand.get("colors", {}).get("text", "#1A1A1A")
+    # Антропик-стиль по умолчанию
+    primary = brand.get("colors", {}).get("primary", "#1F1F1E")
+    secondary = brand.get("colors", {}).get("secondary", "#5A4BFF")
+    accent = brand.get("colors", {}).get("accent", "#FF5B24")
+    text_color = brand.get("colors", {}).get("text", "#1F1F1E")
 
     site = contacts.get("site", "")
-    company_phone = contacts.get("phone", "")
-    company_email = contacts.get("email", "")
 
-    telegram_link = f'| <a href="https://t.me/{telegram.lstrip("@")}" style="color:{secondary};text-decoration:none;">{telegram}</a>' if telegram else ""
+    telegram_html = (
+        f'<span style="margin-left:8px;">'
+        f'<a href="https://t.me/{telegram.lstrip("@")}" '
+        f'style="color:{secondary};text-decoration:none;font-weight:500;">{telegram}</a>'
+        f'</span>'
+        if telegram else ""
+    )
+
+    site_html = (
+        f'<a href="https://{site}" style="color:{secondary};text-decoration:none;font-weight:500;">{site}</a>'
+        if site else ""
+    )
 
     html = f"""
-<table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,sans-serif;font-size:14px;color:{text_color};">
+<table cellpadding="0" cellspacing="0" border="0" style="font-family:Inter, Arial, sans-serif; font-size:14px; color:{text_color}; line-height:1.6;">
   <tr>
-    <td style="padding-right:16px;border-right:2px solid {primary};">
-      <div style="font-size:18px;font-weight:bold;color:{primary};">{full_name}</div>
-      <div style="color:{secondary};">{position}</div>
-    </td>
-    <td style="padding-left:16px;">
-      <div style="font-weight:bold;color:{primary};">{company}</div>
-      <div>{phone}</div>
-      <div><a href="mailto:{email}" style="color:{secondary};text-decoration:none;">{email}</a></div>
-      <div>{site} {telegram_link}</div>
-      {f'<div style="margin-top:4px;font-size:12px;color:#666;">{slogan}</div>' if slogan else ""}
+    <td style="width:6px; background:{secondary}; border-radius:3px;"></td>
+    <td style="width:10px;"></td>
+    <td style="padding:4px 0;">
+      <div style="font-size:17px; font-weight:600; color:{primary}; letter-spacing:-0.01em;">{full_name}</div>
+      <div style="color:{secondary}; font-weight:500; margin-top:1px;">{position} · {company}</div>
+      <div style="margin-top:10px;">
+        <span>{phone}</span>
+        <span style="margin:0 8px; color:{accent};">·</span>
+        <a href="mailto:{email}" style="color:{secondary}; text-decoration:none; font-weight:500;">{email}</a>
+      </div>
+      <div style="margin-top:2px;">
+        {site_html}
+        {telegram_html}
+      </div>
+      {f'<div style="margin-top:10px; font-size:12px; color:#6B6B6A; font-style:italic;">{slogan}</div>' if slogan else ""}
     </td>
   </tr>
 </table>
