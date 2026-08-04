@@ -9,4 +9,5 @@ qrcode[pil]
 pillow
 anthropic
 jinja2
+python-dotenv
 pytest

@@ -1,9 +1,10 @@
 """Работа с бренд-буком компании."""
 
 import json
-from pathlib import Path
 
-BRAND_PATH = Path("data/brandbook.json")
+from core.config import DATA_DIR
+
+BRAND_PATH = DATA_DIR / "brandbook.json"
 
 
 def load() -> dict:

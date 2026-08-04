@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from core.brand import save as save_brand
-from generators import business_card, presentation, proposal
+from generators import business_card, email_signature, presentation, proposal
 
 
 def main():
@@ -17,6 +17,9 @@ def main():
 
     card = sub.add_parser("business-card", help="Сгенерировать визитку")
     card.add_argument("--input", required=True, help="Путь к JSON с данными сотрудника")
+
+    sign = sub.add_parser("email-signature", help="Сгенерировать email-подпись")
+    sign.add_argument("--input", required=True, help="Путь к JSON с данными сотрудника")
 
     pres = sub.add_parser("presentation", help="Сгенерировать презентацию")
     pres.add_argument("--input", required=True, help="Путь к JSON с данными клиента")
@@ -34,6 +37,10 @@ def main():
         inp = json.loads(Path(args.input).read_text(encoding="utf-8"))
         path = business_card.generate(inp)
         print(f"Визитка сохранена: {path}")
+    elif args.command == "email-signature":
+        inp = json.loads(Path(args.input).read_text(encoding="utf-8"))
+        path = email_signature.generate(inp)
+        print(f"Email-подпись сохранена: {path}")
     elif args.command == "presentation":
         inp = json.loads(Path(args.input).read_text(encoding="utf-8"))
         path = presentation.generate(inp)
