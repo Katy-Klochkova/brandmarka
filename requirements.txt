@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pydantic
+python-multipart
+reportlab
+python-pptx
+python-docx
+qrcode[pil]
+pillow
+anthropic
+jinja2
+pytest
