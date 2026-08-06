@@ -59,6 +59,7 @@ python run.py business-card --input demo/sample-inputs/employee.json
 4. **Зависимости** — при добавлении библиотеки обнови `requirements.txt`.
 5. **Веб-интерфейс** — статика без фреймворков. Стилистика: Open Sans/Inter, акценты `#5A4BFF` и `#FF5B24`, фон `#FAFAF8`, текст `#1F1F1E`.
 6. **README** — при новой фиче обнови разделы «Основная функция», «Поддерживаемые материалы», «MVP», «Структура проекта» и примеры команд.
+7. **Тесты** — при изменении генераторов запусти `python -m pytest tests/ -v` и убедись, что они проходят.
 
 ## Проверка ошибок
 
@@ -78,7 +79,9 @@ python run.py business-card --input demo/sample-inputs/employee.json
    python run.py proposal --input demo/sample-inputs/proposal.json
    ```
 5. **PDF**: для PPTX/DOCX в PDF нужен LibreOffice; PNG → PDF работает без него.
-6. **Консоль**: проверь на `ModuleNotFoundError` и `FileNotFoundError`. Если `brandbook.json` отсутствует — загрузи бренд-бук через веб или `python run.py upload-brandbook --file data/brandbook.json`.
+6. **Консоль**: проверь на `ModuleNotFoundError` и `FileNotFoundError`.
+   - Если `brandbook.json` отсутствует — загрузи бренд-бук через веб или CLI: `python run.py upload-brandbook --file data/brandbook.json`.
+   - Если падает конвертация PPTX/DOCX в PDF — проверь, что LibreOffice установлен и доступен в PATH.
 
 ## Обновление README
 
@@ -90,8 +93,9 @@ python run.py business-card --input demo/sample-inputs/employee.json
 
 1. Убедись, что в индекс не попали `.venv/`, `data/`, `output/`, `uploads/`, `.env`, `__pycache__/` — `.gitignore` уже исключает их.
 2. Обнови `README.md` и документацию в `docs/`, если проект изменился.
-3. Актуализируй скриншот веб-интерфейса.
-4. Только после подтверждения Katy выполняй:
+3. Запусти тесты: `python -m pytest tests/ -v`.
+4. Актуализируй скриншот веб-интерфейса.
+5. Только после подтверждения Katy выполняй:
    ```bash
    git add .
    git commit -m "..."
